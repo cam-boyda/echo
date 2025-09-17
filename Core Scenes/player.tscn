@@ -1,0 +1,73 @@
+[gd_scene load_steps=13 format=3 uid="uid://b8kgeprdq3f4q"]
+
+[ext_resource type="Script" uid="uid://c7o6w3aixtfpx" path="res://Scripts/player_manager.gd" id="1_67hcy"]
+[ext_resource type="Script" uid="uid://d4cr82q667cty" path="res://Scripts/character_mover.gd" id="2_7iic3"]
+[ext_resource type="Script" uid="uid://cwedh0b3i5627" path="res://Scripts/weapon_manager.gd" id="2_g7vtt"]
+[ext_resource type="Script" uid="uid://bja0pte8ofpvj" path="res://Scripts/player_camera.gd" id="4_7iic3"]
+[ext_resource type="PackedScene" uid="uid://vejf5kdxennw" path="res://Module Scenes/hit_box.tscn" id="4_g7vtt"]
+[ext_resource type="PackedScene" uid="uid://c4o454c3rioat" path="res://Module Scenes/hurt_box.tscn" id="5_etajh"]
+[ext_resource type="PackedScene" uid="uid://bkybhhk111d1e" path="res://Module Scenes/hit_scan.tscn" id="6_e1igt"]
+[ext_resource type="Script" uid="uid://cd8agvqwkafar" path="res://Scripts/projectile_launcher.gd" id="7_og3vw"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_rpy1i"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_jpong"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_jpong"]
+height = 0.1
+
+[sub_resource type="Curve3D" id="Curve3D_7iic3"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 15, 10, 0, 0, 0, 0, 0, 0, 0, 1, 0),
+"tilts": PackedFloat32Array(0, 0)
+}
+point_count = 2
+
+[node name="Player" type="Node3D" groups=["player"]]
+script = ExtResource("1_67hcy")
+
+[node name="WeaponManager" type="Node" parent="."]
+script = ExtResource("2_g7vtt")
+
+[node name="CharacterBody3D" type="CharacterBody3D" parent="."]
+script = ExtResource("2_7iic3")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CharacterBody3D"]
+mesh = SubResource("CapsuleMesh_rpy1i")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
+shape = SubResource("CapsuleShape3D_jpong")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="CharacterBody3D"]
+path_desired_distance = 0.5
+target_desired_distance = 0.5
+path_height_offset = -0.75
+debug_enabled = true
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.615819)
+mesh = SubResource("CylinderMesh_jpong")
+
+[node name="HitBox" parent="CharacterBody3D" instance=ExtResource("4_g7vtt")]
+
+[node name="HurtBox" parent="CharacterBody3D" instance=ExtResource("5_etajh")]
+
+[node name="HitScan" parent="CharacterBody3D" instance=ExtResource("6_e1igt")]
+
+[node name="ProjectileLauncher" type="Marker3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.765106, 0.604684, -0.606735)
+script = ExtResource("7_og3vw")
+
+[node name="Path3D" type="Path3D" parent="."]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0, 0, 0)
+curve = SubResource("Curve3D_7iic3")
+
+[node name="PathFollow3D" type="PathFollow3D" parent="Path3D"]
+transform = Transform3D(1, 0, 0, 0, 0.581238, 0.813733, 0, -0.813733, 0.581238, 0, 15, 10)
+
+[node name="PlayerCamera" type="Camera3D" parent="Path3D/PathFollow3D"]
+transform = Transform3D(0.998138, -0.0345548, 0.0502742, 0.0390058, 0.995139, -0.090431, -0.046905, 0.0922236, 0.994633, 0, 0, 0)
+projection = 1
+current = true
+size = 20.0
+script = ExtResource("4_7iic3")

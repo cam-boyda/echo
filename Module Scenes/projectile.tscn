@@ -1,0 +1,63 @@
+[gd_scene load_steps=9 format=3 uid="uid://bun7gl8i3aito"]
+
+[ext_resource type="Script" uid="uid://bmrgiuos4vd32" path="res://Scripts/projectile.gd" id="1_bw68c"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_2skit"]
+radius = 0.05
+height = 0.5
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_bw68c"]
+damping_max = 18.182
+turbulence_enabled = true
+
+[sub_resource type="SphereMesh" id="SphereMesh_bma7m"]
+radius = 0.05
+height = 0.1
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_bw68c"]
+radius = 0.240213
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bw68c"]
+transparency = 1
+albedo_color = Color(0.960784, 0, 0, 0.588235)
+
+[sub_resource type="SphereMesh" id="SphereMesh_mxlgo"]
+material = SubResource("StandardMaterial3D_bw68c")
+radius = 2.0
+height = 4.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_01ilw"]
+radius = 2.0
+
+[node name="projectile" type="Node3D"]
+script = ExtResource("1_bw68c")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0.25)
+mesh = SubResource("CapsuleMesh_2skit")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.25, -1.09278e-08)
+lifetime = 0.5
+process_material = SubResource("ParticleProcessMaterial_bw68c")
+draw_pass_1 = SubResource("SphereMesh_bma7m")
+
+[node name="contact_detection" type="Area3D" parent="MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.25, 1.09278e-08)
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/contact_detection"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0562286)
+shape = SubResource("SphereShape3D_bw68c")
+
+[node name="explosion_mesh" type="MeshInstance3D" parent="."]
+visible = false
+mesh = SubResource("SphereMesh_mxlgo")
+
+[node name="explosion_detection" type="Area3D" parent="explosion_mesh"]
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="explosion_mesh/explosion_detection"]
+shape = SubResource("SphereShape3D_01ilw")
+
+[connection signal="body_shape_entered" from="MeshInstance3D/contact_detection" to="." method="_on_contact_detection_body_shape_entered"]

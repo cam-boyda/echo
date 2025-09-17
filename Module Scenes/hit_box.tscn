@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://vejf5kdxennw"]
+
+[ext_resource type="Script" uid="uid://cupnnsp14d22b" path="res://Scripts/hitbox.gd" id="1_xm7m2"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jpong"]
+size = Vector3(2, 1, 2.25)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xm7m2"]
+albedo_color = Color(1, 0.635294, 0, 1)
+
+[node name="HitBox" type="Area3D"]
+monitoring = false
+monitorable = false
+script = ExtResource("1_xm7m2")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.25)
+shape = SubResource("BoxShape3D_jpong")
+
+[node name="debug" type="CSGPolygon3D" parent="."]
+visible = false
+material_override = SubResource("StandardMaterial3D_xm7m2")
+transparency = 0.5
+cast_shadow = 0
+polygon = PackedVector2Array(-0.966651, -0.491509, -0.950856, 0.474602, 1.03728, 0.467283, 0.968152, -0.551895)
+depth = 2.3

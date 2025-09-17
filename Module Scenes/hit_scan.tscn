@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://bkybhhk111d1e"]
+
+[ext_resource type="Script" uid="uid://clnouhkrpiubs" path="res://Scripts/hit_scan.gd" id="1_xajo3"]
+
+[node name="HitScan" type="RayCast3D"]
+enabled = false
+target_position = Vector3(0, 0, -100)
+collide_with_areas = true
+debug_shape_custom_color = Color(1, 0.635294, 0, 1)
+debug_shape_thickness = 5
+script = ExtResource("1_xajo3")
