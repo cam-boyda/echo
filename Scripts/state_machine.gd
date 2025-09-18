@@ -9,29 +9,69 @@ enum STATE {
 }
 
 @onready var enemy: Node3D = $".."
-var current_state : STATE = STATE.IDLE
-var visible_notifier = VisibleOnScreenNotifier3D.new()
-var reaction_timer = Timer.new()
 
-func _ready() -> void:
-	add_child(reaction_timer)
-	reaction_timer.one_shot = true
-	enemy.add_child.call_deferred(visible_notifier)
-	visible_notifier.connect("screen_entered",visible_on_screen)
+var player_last_seen
+
+var current_state : STATE = STATE.IDLE
+var is_looking_for_player
+var player
+
+var lose_interest_timer = 0.0
+var lose_interest_threshold = 5.0
+
+signal idle
+signal alert
+signal reposition
+signal attack
 
 func change_state(new_state : STATE):
-	reaction_timer.start()
-	reaction_timer.wait_time = randf_range(0.2,0.5)
-	await reaction_timer.timeout
 	match new_state:
 		STATE.IDLE:
-			print("idle")
+			emit_signal("idle")
+			is_looking_for_player = false
 		STATE.ALERT:
-			print("alert")
+			emit_signal("alert")
+			if get_tree().get_first_node_in_group("player"):
+				player = enemy.player
+				is_looking_for_player = true
 		STATE.REPOSITION:
-			print("repositioning")
+			emit_signal("reposition")
 		STATE.ATTACK:
-			print("attacking")
+			emit_signal("attack")
+	current_state = new_state
 
 func visible_on_screen():
-	change_state(STATE.ALERT)
+	if current_state == STATE.IDLE:
+		change_state(STATE.ALERT)
+
+func off_screen():
+	if current_state == STATE.ALERT:
+		change_state(STATE.IDLE)
+
+func CheckLOS(pos):
+	var enemy_pos = enemy.enemy.global_position
+	var player_pos = pos
+	var space = enemy.enemy.get_world_3d().direct_space_state
+	var rayquery = PhysicsRayQueryParameters3D.create(enemy_pos,player_pos)
+	var result = space.intersect_ray(rayquery)
+	if result.keys().is_empty() == false:
+		if result["collider"] == player:
+			player_last_seen = result["position"]
+			return true
+		else:
+			return false
+	else:
+		return false
+
+func _process(delta: float) -> void:
+	if is_looking_for_player:
+		var player_pos = player.global_position
+		if CheckLOS(player_pos):
+			change_state(STATE.ATTACK)
+			lose_interest_timer = 0.0
+		else:
+			if current_state != STATE.ALERT:
+				change_state(STATE.REPOSITION)
+				lose_interest_timer += delta
+				if lose_interest_timer >= lose_interest_threshold:
+					change_state(STATE.ALERT)

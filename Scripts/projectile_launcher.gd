@@ -6,6 +6,7 @@ var cooldown_timer : Timer = Timer.new()
 var attack_timer : Timer = Timer.new()
 var target_point
 var ignore_hurt_box = []
+var damage = 1
 
 const PROJECTILE = preload("res://Module Scenes/projectile.tscn")
 
@@ -38,4 +39,4 @@ func cooldown_timeout():
 
 func monitor_hits(hurt_box):
 	if hurt_box is HurtBox and not ignore_hurt_box.has(hurt_box):
-		print("projectile launched")
+		hurt_box.projectile_hit(damage)

@@ -42,7 +42,6 @@ shape = SubResource("CapsuleShape3D_jpong")
 path_desired_distance = 0.5
 target_desired_distance = 0.5
 path_height_offset = -0.75
-debug_enabled = true
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="CharacterBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.615819)
@@ -51,6 +50,7 @@ mesh = SubResource("CylinderMesh_jpong")
 [node name="HitBox" parent="CharacterBody3D" instance=ExtResource("4_g7vtt")]
 
 [node name="HurtBox" parent="CharacterBody3D" instance=ExtResource("5_etajh")]
+collision_layer = 7
 
 [node name="HitScan" parent="CharacterBody3D" instance=ExtResource("6_e1igt")]
 

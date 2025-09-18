@@ -4,6 +4,7 @@ class_name HitScan
 var is_active = true
 var cooldown_timer : Timer = Timer.new()
 var attack_timer : Timer = Timer.new()
+var damage = 1
 
 func _ready() -> void:
 	add_child(cooldown_timer)
@@ -27,7 +28,7 @@ func cooldown_timeout():
 func attack_timeout():
 	if get_collider():
 			if get_collider() is HurtBox:
-				get_collider().hit_scan_hit()
+				get_collider().hit_scan_hit(damage)
 	is_active = false
 	enabled = false
 	cooldown_timer.start()

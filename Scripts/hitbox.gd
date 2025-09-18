@@ -5,6 +5,7 @@ var is_active = true
 var cooldown_timer : Timer = Timer.new()
 var attack_timer : Timer = Timer.new()
 var ignore_hurt_box = []
+var damage = 1
 
 @onready var debug: CSGPolygon3D = $debug
 
@@ -42,4 +43,4 @@ func cooldown_timeout():
 func monitor_hits(hurt_box):
 	if hurt_box is HurtBox and not ignore_hurt_box.has(hurt_box):
 		debug.material_override.albedo_color = Color.RED
-		print("melee hit")
+		hurt_box.melee_hit(damage)

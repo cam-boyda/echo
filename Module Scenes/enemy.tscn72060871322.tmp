@@ -1,0 +1,47 @@
+[gd_scene load_steps=10 format=3 uid="uid://rq1nu3ek703i"]
+
+[ext_resource type="Script" uid="uid://ciwlm3ccgqmhv" path="res://Scripts/hurt_box.gd" id="1_4qj0b"]
+[ext_resource type="Script" uid="uid://beh5l10py60ur" path="res://Scripts/enemy_manager.gd" id="1_i564r"]
+[ext_resource type="Script" uid="uid://dwopfk7xlokdi" path="res://Scripts/state_machine.gd" id="2_gk2si"]
+[ext_resource type="Script" uid="uid://dleypwvv5cnpd" path="res://Scripts/enemy_mover.gd" id="3_8f2fo"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_aunw1"]
+albedo_color = Color(1, 0.415686, 0.403922, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_4qj0b"]
+material = SubResource("StandardMaterial3D_aunw1")
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_i564r"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_gk2si"]
+height = 0.1
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_i564r"]
+size = Vector3(1, 1.70758, 1)
+
+[node name="Enemy" type="Node3D"]
+script = ExtResource("1_i564r")
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource("2_gk2si")
+
+[node name="CharacterBody3D" type="CharacterBody3D" parent="."]
+script = ExtResource("3_8f2fo")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CharacterBody3D"]
+mesh = SubResource("CapsuleMesh_4qj0b")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
+shape = SubResource("CapsuleShape3D_i564r")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.615819)
+mesh = SubResource("CylinderMesh_gk2si")
+
+[node name="HurtBox" type="Area3D" parent="CharacterBody3D"]
+script = ExtResource("1_4qj0b")
+metadata/_custom_type_script = "uid://ciwlm3ccgqmhv"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D/HurtBox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0838318, 0)
+shape = SubResource("BoxShape3D_i564r")

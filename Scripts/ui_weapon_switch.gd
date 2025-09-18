@@ -1,8 +1,16 @@
 extends Control
 var player
 
+@onready var progress_bar: ProgressBar = $VBoxContainer/ProgressBar
+
 func _ready() -> void:
 	player = get_tree().get_first_node_in_group("player")
+	player.connect("hit",Callable(self,"on_hit"))
+
+func on_hit(dmg):
+	progress_bar.value -= dmg
+	if progress_bar.value <= 0:
+		get_tree().quit()
 
 func _on_melee_pressed() -> void:
 	player.equip("melee")

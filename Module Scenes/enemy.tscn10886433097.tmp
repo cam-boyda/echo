@@ -1,11 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://rq1nu3ek703i"]
+[gd_scene load_steps=10 format=3 uid="uid://rq1nu3ek703i"]
 
+[ext_resource type="Script" uid="uid://ciwlm3ccgqmhv" path="res://Scripts/hurt_box.gd" id="1_4qj0b"]
 [ext_resource type="Script" uid="uid://beh5l10py60ur" path="res://Scripts/enemy_manager.gd" id="1_i564r"]
 [ext_resource type="Script" uid="uid://dwopfk7xlokdi" path="res://Scripts/state_machine.gd" id="2_gk2si"]
 [ext_resource type="Script" uid="uid://dleypwvv5cnpd" path="res://Scripts/enemy_mover.gd" id="3_8f2fo"]
-[ext_resource type="PackedScene" uid="uid://vejf5kdxennw" path="res://Module Scenes/hit_box.tscn" id="5_3nihl"]
-[ext_resource type="PackedScene" uid="uid://c4o454c3rioat" path="res://Module Scenes/hurt_box.tscn" id="6_3nihl"]
-[ext_resource type="PackedScene" uid="uid://bkybhhk111d1e" path="res://Module Scenes/hit_scan.tscn" id="6_kqsi1"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_aunw1"]
 albedo_color = Color(1, 0.415686, 0.403922, 1)
@@ -18,11 +16,11 @@ material = SubResource("StandardMaterial3D_aunw1")
 [sub_resource type="CylinderMesh" id="CylinderMesh_gk2si"]
 height = 0.1
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_i564r"]
+size = Vector3(1, 1.70758, 1)
+
 [node name="Enemy" type="Node3D"]
 script = ExtResource("1_i564r")
-
-[node name="Ticker" type="Timer" parent="."]
-wait_time = 0.1
 
 [node name="StateMachine" type="Node" parent="."]
 script = ExtResource("2_gk2si")
@@ -40,23 +38,19 @@ shape = SubResource("CapsuleShape3D_i564r")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.615819)
 mesh = SubResource("CylinderMesh_gk2si")
 
+[node name="HurtBox" type="Area3D" parent="CharacterBody3D"]
+script = ExtResource("1_4qj0b")
+metadata/_custom_type_script = "uid://ciwlm3ccgqmhv"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D/HurtBox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0838318, 0)
+shape = SubResource("BoxShape3D_i564r")
+
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="CharacterBody3D"]
-simplify_path = true
-keep_y_velocity = false
+debug_enabled = true
+debug_use_custom = true
 
 [node name="Timer" type="Timer" parent="CharacterBody3D"]
 wait_time = 0.1
 
-[node name="VisibleOnScreenNotifier3D" type="VisibleOnScreenNotifier3D" parent="CharacterBody3D"]
-
-[node name="HitBox" parent="CharacterBody3D" instance=ExtResource("5_3nihl")]
-collision_mask = 4
-
-[node name="HitScan" parent="CharacterBody3D" instance=ExtResource("6_kqsi1")]
-
-[node name="HurtBox" parent="CharacterBody3D" instance=ExtResource("6_3nihl")]
-
-[connection signal="timeout" from="Ticker" to="." method="_on_ticker_timeout"]
 [connection signal="timeout" from="CharacterBody3D/Timer" to="CharacterBody3D" method="_on_timer_timeout"]
-[connection signal="screen_entered" from="CharacterBody3D/VisibleOnScreenNotifier3D" to="." method="_on_visible_on_screen_notifier_3d_screen_entered"]
-[connection signal="screen_exited" from="CharacterBody3D/VisibleOnScreenNotifier3D" to="." method="_on_visible_on_screen_notifier_3d_screen_exited"]
